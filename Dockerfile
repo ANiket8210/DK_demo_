@@ -1,14 +1,20 @@
-# Step 1: Use an official Python runtime as a base image
-FROM python:3.10-slim
+# Use the official Node.js image from the Docker Hub
+FROM node:18-alpine
 
-# Step 2: Set the working directory in the container
-WORKDIR /app
+# Set the working directory inside the container
+WORKDIR /usr/src/app
 
-# Step 3: Copy the current directory contents into the container
-COPY . /app
+# Copy package.json and package-lock.json (if available) first to leverage Docker caching
+COPY package*.json ./
 
-# Step 4: Install any dependencies in requirements.txt (if present)
-RUN pip install --no-cache-dir -r requirements.txt
+# Install any dependencies (none in this case for simplicity)
+RUN npm install
 
-# Step 5: Define the command to run your app
-CMD ["python", "app.py"]
+# Copy the rest of the application code to the container
+COPY . .
+
+# Expose the port the app will run on
+EXPOSE 8080
+
+# Command to run the app
+CMD ["node", "app.js"]
